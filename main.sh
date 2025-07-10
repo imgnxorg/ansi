@@ -9,6 +9,7 @@ squareRoot=$(echo "scale=4; sqrt($total)" | bc -l)
 rows=$((total / columns))
 cardinal=0
 z=0
+formant=1
 lastH=-1
 lastS=-1
 lastL=-1
@@ -67,12 +68,11 @@ for ((z = 0; z < 256; z++)); do
 		;;
 	*) ;;
 	esac
+	cardinal=$((cardinal + 1))
 
 	if (($cardinal % $columns == 0)); then
 		echo -n -e "\n"
 	fi
-
-	cardinal=$((cardinal + 1))
 
 	# Calculate RGB values based on ANSI color number
 	if [ $z -lt 8 ]; then
@@ -187,14 +187,6 @@ for ((z = 0; z < 256; z++)); do
 		text_color="37" # White text for dark backgrounds
 	fi
 
-	padded_z=$(printf '%3s' $z)
-	echo -en "\033[48;5;${z}m\033[${text_color}m$padded_z\033[49m\033[39m $hex "
+	padded_z=$(printf '%4s' $z)
+	echo -en "\033[48;5;${z}m\033[${text_color}m$padded_z\033[49m\033[0m\033[38;5;${z}m:$hex \033[0m"
 done
-
-# for red in {0..255}; do
-# 	for green in {0..255}; do
-# 		for blue in {0..255}; do
-# 			echo -e "\033[38;2;${red};${green};${blue}mColor (${red},${green},${blue})\033[0m"
-# 		done
-# 	done
-# done
